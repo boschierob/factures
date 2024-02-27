@@ -1,0 +1,18 @@
+_id 65dc883c6f6c5580a3481047
+
+customer_firstname Array 
+customer_lastname ""
+
+customer_address Object
+    road ""
+    number""
+    extra_info ""
+    postal_code ""
+    city ""
+    country ""
+    customer_number ""
+
+prestation Object
+    description ""
+    unit_price ""
+    unit_type ""

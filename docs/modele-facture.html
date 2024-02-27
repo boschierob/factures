@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 0.7vw;
+            min-width: 70%;
+            max-width: 100%;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .invoices {
+            max-width: 70%;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .facture-info {
+            margin-bottom: 20px;
+        }
+
+        .table {
+            width: 50%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table th{
+            text-align: left;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+        }
+        .total{
+            font-size:0.8vw;
+        }
+        .mentions-legales {
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+        .invoice-details{
+            display: flex;
+            margin-bottom: 100px;
+        }
+        .company-container{
+            width:50%;
+        }
+        .bank{
+            max-width: 30%;
+        }
+    </style>
+</head>
+
+<body id="invoice" class="invoice">
+    <div class="container">
+        <div class="logo">
+            <img src="logo.png" alt="Logo de l'entreprise">
+        </div>
+    </div>
+    <div id="button">
+        <button>Print</button>
+    </div>
+    <div id="invoice" class="invoice">
+        <div class="invoice-header">
+            <h1>Facture {{facture}}</h1>
+            <p><strong>Date:</strong>{{date}}</p>
+        </div>
+        <div class="invoice-details">
+            <div class="company-container">
+                <table>
+                    <thead>Émetteur:</thead>
+                    <tr>
+                        <td>{{company.companyName}}</td>
+                    </tr>
+                    <tr>
+                        <td>SIRET: {{company.siret}} APE: {{company.ape}}</td>
+                    </tr>
+                    <tr>
+                        <td>RNA: {{company.rna}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{company.adress}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{company.cp}} {{company.city}}</td>
+                    </tr>
+                    </table>
+                    <table style="margin-top: 20px;">
+                    <tr>
+                        <td>{{company.telephone}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{company.email}}</td>
+                    </tr>
+        
+                    <tr>
+                        <td>{{company.web}}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="customer-container">
+                <table>
+                    <thead>Adressé à:</thead>
+    
+                    <tr>
+                        <td>{{client.nom}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{client.rue}}</td>
+                        <td>{{client.cp}}</td> 
+                        <td>{{client.ville}}</td>
+                    </tr>
+                       
+                    
+                    <!-- Autres détails du client -->
+                </table>
+                <em>Numéro de client</em>
+                <em>{{client.numero}}</em>
+            </div>
+            
+        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="total">Description</th>
+                    <th class="total">Quantité</th>
+                    <th class="total">Prix unitaire</th> 
+                    <th class="total">Total</th>
+                </tr>
+            </thead>
+            <tbody id="prestations">
+                {{tbodyContent}}
+                <!-- Ajoutez d'autres lignes de produits/services si nécessaire -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" class="total">Total HT</th>
+                    <td id="total-HT" class="total"></td>
+                </tr>
+                <tr>
+                    <th colspan="3">TVA (<span id="mention-tva">{{mention-tva}}</span> )<span id="taux-tva"
+                            hidden>{{taux-tva}}</span></th>
+                    <td id="TVA">36,00 €</td>
+                </tr>
+                <tr>
+                    <th colspan="3" class="total">Total TTC</th>
+                    <td id="total-TTC" class="total"></td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="mentions-legales">
+            <p><strong>Mentions légales :</strong> <span id="mention-tva">{{mention-tva}}</span></p>
+            <p><strong>Conditions de règlement :</strong> Paiement à réception de facture</p>
+            <!-- Ajoutez d'autres mentions légales si nécessaire -->
+        </div>
+        <div class="bank">
+           {{bank-infos}}
+            <!-- Ajoutez d'autres mentions légales si nécessaire -->
+        </div>
+        </div>
+    
+
+    </div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    // Fonction pour calculer les totaux
+    function calculerTotaux() {
+        let totalHT = 0;
+        let tauxTVA = parseFloat(document.getElementById('taux-tva').innerText) / 100;
+        let totalTTC;
+
+        // Parcourir chaque ligne de produit/service
+        document.querySelectorAll('.total_per_line').forEach((element) => {
+            let qty = parseInt(element.parentElement.querySelector('.qty').innerText);
+            let unitPrice = parseFloat(element.parentElement.querySelector('.unit_price').innerText.replace(' €', '').replace(',', '.'));
+            let totalPerLine = qty * unitPrice;
+            totalHT += totalPerLine;
+            element.innerText = totalPerLine.toFixed(2) + ' €';
+        });
+
+        // Calculer le total TTC
+        totalTTC = totalHT * (1 + tauxTVA);
+
+        // Mettre à jour les valeurs dans le footer
+        document.getElementById('total-HT').innerText = totalHT.toFixed(2) + ' €';
+        document.getElementById('TVA').innerText = (totalHT * tauxTVA).toFixed(2) + ' €';
+        document.getElementById('total-TTC').innerText = totalTTC.toFixed(2) + ' €';
+    }
+
+    // Appeler la fonction de calcul des totaux au chargement de la page
+    window.onload = function () {
+        calculerTotaux();
+    };
+//test html to pdf
+var element = document.getElementById('invoice');
+var button = document.getElementById('button');
+button.addEventListener('click', ()=>{
+    console.log("print");
+    html2pdf()
+		.set({ html2canvas: { scale: 4 } })
+		.from(element)
+		.save();
+})
+
+</script>
+
+</html>
