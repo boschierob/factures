@@ -27,7 +27,7 @@ function creerNumeroFactures() {
         fs.mkdirSync(dossierFactures);
     }
 
-    const dossierLength = fs.readdirSync(dossierFactures).length + 1;
+    const dossierLength = fs.readdirSync(dossierFactures).length;//pas +1 car le dossier /pdf compte pour un élément
     const createNumero = dossierLength.toString().padStart(3, '0');
     return createNumero;
 }
@@ -70,7 +70,7 @@ const verifyFirstname = (customer_firstname, customerData) => {
 
 //Fonction pour générer facture en HTML
 async function genererFactureHTML(customer, datesInterventions, nombreInterventions, company) {
-    console.log(`company : ${JSON.stringify(company)}`);
+
     //collecter données
     //générer numéro de facture
     const numeroFacture = creerNumeroFactures();
@@ -85,33 +85,33 @@ async function genererFactureHTML(customer, datesInterventions, nombreInterventi
 
     //prestations
     const prestations = customer.prestations;
-    
+
 
     const tbodyContent = prestations.map((prestation) => {
         const interventionDates = prestation.interventions.map((intervention) => {
             //console.log(intervention);
-            
+
             const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
             //console.log( intervention.date.toLocaleDateString('fr-FR', options));
-            const formattedDates = intervention.date.toLocaleDateString('fr-FR', options);          
+            const formattedDates = intervention.date.toLocaleDateString('fr-FR', options);
             return formattedDates;
         })
 
-        const coef= () => {
-            let coefficient = 1; 
+        const coef = () => {
+            let coefficient = 1;
             console.log(prestation.unit_type);
             if (prestation.unit_type === "forfait") {
                 coefficient = 1;
-            }else{
-                prestation.interventions.map((intervention)=>{
+            } else {
+                prestation.interventions.map((intervention) => {
                     coefficient = intervention.qty_unit;
                 })
-            } 
+            }
             return coefficient;
         }
 
         const qty = prestation.interventions.length * coef();
-        console.log('coeff ' +coef());
+        console.log('coeff ' + coef());
 
         return `
             <tr>
@@ -129,7 +129,7 @@ async function genererFactureHTML(customer, datesInterventions, nombreInterventi
 
     const bankInfos = `
     <table>
-        <th>Nos coordonnées pour votre règlement :</th>
+        <th>Nos coordonnées pour tout règlement :</th>
         <tr>
             <td>titulaire du compte :${company.banques[0].titulaireName} </td>  
         </tr>
@@ -146,8 +146,23 @@ async function genererFactureHTML(customer, datesInterventions, nombreInterventi
 `
 
     try {
+
+        // Chemin de l'image
+        const cheminImage = './docs/logo.png';
+
+        // Lire le contenu de l'image
+        const data = await fs.promises.readFile(cheminImage);
+
+        // Convertir les données de l'image en base64
+        const imgData = Buffer.from(data).toString('base64');
+
+        // Lire modèle de facture
         const modeleFacture = await fs.promises.readFile('./docs/modele-facture.html', 'utf-8');
+
+        console.log(imgData);
+
         const factureHTML = modeleFacture
+            .replace(/{{imgData}}/g, imgData)
             .replace(/{{date}}/g, `${dateDuJour}`)
             .replace(/{{facture}}/g, `FA-${numeroFacture}`)
             .replace(/{{company.companyName}}/g, `${company.companyName}`)
@@ -173,9 +188,6 @@ async function genererFactureHTML(customer, datesInterventions, nombreInterventi
             .replace(/{{bank-infos}}/g, bankInfos);
 
 
-
-
-
         //console.log(`${factureHTML}`);
         return factureHTML;
     } catch (error) {
@@ -186,7 +198,7 @@ async function genererFactureHTML(customer, datesInterventions, nombreInterventi
 
 //fonction pour écrire la facture dans un dossier
 function ecrireFacture(factureHTML) {
-    const dossierFacturesHTML = 'factures/html';
+    const dossierFacturesHTML = 'factures';
     const dossierFacturesPDF = 'factures/pdf';
 
     // Vérifier si le dossier "factures" existe, sinon le créer
@@ -201,7 +213,7 @@ function ecrireFacture(factureHTML) {
     const numeroFacture = creerNumeroFactures();
     const nomFichierFactureHTML = `FA-${numeroFacture}.html`;
     const cheminFichierFactureHTML = path.join(dossierFacturesHTML, nomFichierFactureHTML);
-    const nomFichierFacturePDF= `FA-${numeroFacture}.pdf`;
+    const nomFichierFacturePDF = `FA-${numeroFacture}.pdf`;
     const cheminFichierFacturePDF = path.join(dossierFacturesPDF, nomFichierFacturePDF);
 
     // Écrire le fichier de facture

@@ -7,43 +7,42 @@
     <title>Facture</title>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            width: 793px;
-            height: 1123px;
             font-family: Arial, sans-serif;
             font-size: 12px;
+            min-width: 70%;
+            max-width: 100%;
             margin: 0;
             padding: 20px;
         }
+        
+        .invoices {
+            max-width: 100%;
+        }
+
         .container {
-            width: 40px;
-            height: 40px;
-            margin:none;
-            border: none;
+            max-width: 800px;
+            margin: auto;
+            border: 1px solid #ccc;
+            padding: 20px;
+            background-color: #f9f9f9;
         }
 
         .logo {
             text-align: left;
-            height: 200px;
-            width: auto;
+            max-width: 10%;
+            margin-bottom: 20px;
         }
-        .logo img{
-            width: 100%;
-        }img
 
         .facture-info {
             margin-bottom: 20px;
         }
-
         .table {
+            width: 80%;
             border-collapse: collapse;
-            width: 100%;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
-
-        table th {
+        
+        table th{
             text-align: left;
         }
 
@@ -57,26 +56,23 @@
         .table th {
             background-color: #f2f2f2;
         }
-
         .mentions-legales {
             border-top: 1px solid #ccc;
             padding-top: 20px;
         }
-
-        .invoice-details {
+        .invoice-details{
             display: flex;
-            justify-content: start;
-            font-size: 12px;
+            margin-bottom: 100px;
+            font-size: 14px;
             font-weight: bolder;
             color: rgba(9, 15, 34, 0.867);
-            background-color: rgb(177, 185, 206);
-            padding-top: 10px;
-            padding-left: 5px;
-            margin-bottom: 20px;
-            border: 1px solid rgb(139, 146, 163);
+            border : 2px solid #464545;
         }
-
-        .bank {
+        .company-container{
+            width:50%;
+        }
+        .bank{
+            gap: 10%;
             max-width: 80%;
             font-size: 12px;
         }
@@ -84,46 +80,46 @@
 </head>
 
 <body id="invoice" class="invoice">
-    <div id="invoice" class="invoice">
-        <div class="container">
-            <div class="logo">
-                <img src="data:image/png;base64,{{imgData}}" alt="Logo de l'entreprise">
-            </div>
+    <div class="container">
+        <div class="logo">
+            <img src="logo.png" alt="Logo de l'entreprise">
         </div>
+    </div>
+    <div id="invoice" class="invoice">
         <div class="invoice-header">
-            <h1>Facture {{facture}}</h1>
-            <p><strong>Date: </strong style="font-weight: bold">{{date}}</p>
+            <h1>Facture FA-010</h1>
+            <p><strong>Date:</strong>28/02/2024</p>
         </div>
         <div class="invoice-details">
             <div class="company-container">
                 <table>
                     <thead class="thead-info">Émetteur:</thead>
                     <tr>
-                        <td>{{company.companyName}}</td>
+                        <td>Simply'Vie</td>
                     </tr>
                     <tr>
-                        <td>SIRET: {{company.siret}} APE: {{company.ape}}</td>
+                        <td>SIRET: 924 593 197 00016 APE: 88.10A</td>
                     </tr>
                     <tr>
-                        <td>RNA: {{company.rna}}</td>
+                        <td>RNA: W263013697</td>
                     </tr>
                     <tr>
-                        <td>{{company.adress}}</td>
+                        <td>23 rue Charles Baudelaire</td>
                     </tr>
                     <tr>
-                        <td>{{company.cp}} {{company.city}}</td>
+                        <td>26000 Valence</td>
                     </tr>
-                </table>
-                <table style="margin-top: 20px;">
+                    </table>
+                    <table style="margin-top: 20px;">
                     <tr>
-                        <td>{{company.telephone}}</td>
+                        <td>0607781734</td>
                     </tr>
                     <tr>
-                        <td>{{company.email}}</td>
+                        <td>contact.simplyvie@gmail.com</td>
                     </tr>
-
+        
                     <tr>
-                        <td>{{company.web}}</td>
+                        <td></td>
                     </tr>
                 </table>
             </div>
@@ -131,37 +127,75 @@
                 <table>
                     <thead class="thead-small">Adressé à:</thead>
                     <tr>
-                        <td>{{client.nom}}</td>
+                        <td>Benjamin et Florence Rouvière</td>
                     </tr>
                     <tr>
-                        <td>{{client.rue}}</td>
+                        <td>288 route Barthélemy de Laffemas</td>
+                        <td>26240</td> 
+                        <td>Beausemblant</td>
                     </tr>
-                    <tr>
-                        <td>{{client.cp}} {{client.ville}}</td>
-                    </tr>
-
+                       
+                    
                     <!-- Autres détails du client -->
                 </table>
                 <em>Numéro de client</em>
-                <em>{{client.numero}}</em>
+                <em>C0001</em>
             </div>
-
+            
         </div>
         <div class="bank">
-            {{bank-infos}}
-            <!-- Ajoutez d'autres mentions légales si nécessaire -->
-        </div>
+            
+    <table>
+        <th>Nos coordonnées pour votre règlement :</th>
+        <tr>
+            <td>titulaire du compte :SIMPLI'VIE SERVICES ET AIDE A DOMICILE </td>  
+        </tr>
+        <tr>
+            <td>adresse du titulaire du compte : 23 RUE CHARLES BAUDELAIRE 26000, VALENCE - FR </td>  
+        </tr>
+        <tr>
+            <td>IBAN :FR76 1695 8000 0124 1817 6873 088 BIC:QNTOFRP1XXX </td> 
+        </tr>
+        <tr> 
+            <td>domiciliation :Qonto (Olinda SAS), 18 rue de Navarin, 75009 Paris, France </td>            
+        </tr>
+    </table>
+
+             <!-- Ajoutez d'autres mentions légales si nécessaire -->
+         </div>
         <table class="table">
             <thead>
                 <tr>
                     <th class="total">Description</th>
                     <th class="total">Quantité</th>
-                    <th class="total">Prix unitaire</th>
+                    <th class="total">Prix unitaire</th> 
                     <th class="total">Total</th>
                 </tr>
             </thead>
             <tbody id="prestations">
-                {{tbodyContent}}
+                
+            <tr>
+                <td>Prestations de nettoyage d'entretien de maison. : </br> 
+                    <ul>
+                    12/01/2024,19/01/2024,26/01/2024
+                    </ul>
+                </td>
+                <td class="qty">6</td>
+                <td class="unit_price">19.74 €</td>
+                <td class="total_per_line">118.44 €</td>
+            </tr>
+        
+            <tr>
+                <td>Prestations de nettoyage d'entretien de maison. : </br> 
+                    <ul>
+                    03/02/2024,03/09/2024
+                    </ul>
+                </td>
+                <td class="qty">4</td>
+                <td class="unit_price">19.74 €</td>
+                <td class="total_per_line">78.96 €</td>
+            </tr>
+        
                 <!-- Ajoutez d'autres lignes de produits/services si nécessaire -->
             </tbody>
             <tfoot>
@@ -170,8 +204,8 @@
                     <td id="total-HT" class="total"></td>
                 </tr>
                 <tr>
-                    <th colspan="3">TVA (<span id="mention-tva">{{mention-tva}}</span> )<span id="taux-tva"
-                            hidden>{{taux-tva}}</span></th>
+                    <th colspan="3">TVA (<span id="mention-tva">TVA non applicable, article 293 B du CGI</span> )<span id="taux-tva"
+                            hidden>0</span></th>
                     <td id="TVA">36,00 €</td>
                 </tr>
                 <tr>
@@ -181,22 +215,38 @@
             </tfoot>
         </table>
         <div class="mentions-legales">
-            <p><strong>Mentions légales :</strong> <span id="mention-tva">{{mention-tva}}</span></p>
+            <p><strong>Mentions légales :</strong> <span id="mention-tva">TVA non applicable, article 293 B du CGI</span></p>
             <p><strong>Conditions de règlement :</strong> Paiement à réception de facture</p>
             <!-- Ajoutez d'autres mentions légales si nécessaire -->
         </div>
         <div class="bank">
-            {{bank-infos}}
+           
+    <table>
+        <th>Nos coordonnées pour votre règlement :</th>
+        <tr>
+            <td>titulaire du compte :SIMPLI'VIE SERVICES ET AIDE A DOMICILE </td>  
+        </tr>
+        <tr>
+            <td>adresse du titulaire du compte : 23 RUE CHARLES BAUDELAIRE 26000, VALENCE - FR </td>  
+        </tr>
+        <tr>
+            <td>IBAN :FR76 1695 8000 0124 1817 6873 088 BIC:QNTOFRP1XXX </td> 
+        </tr>
+        <tr> 
+            <td>domiciliation :Qonto (Olinda SAS), 18 rue de Navarin, 75009 Paris, France </td>            
+        </tr>
+    </table>
+
             <!-- Ajoutez d'autres mentions légales si nécessaire -->
         </div>
-    </div>
-
+        </div>
+    
 
     </div>
 </body>
 
 <script>
-    
+    // Fonction pour calculer les totaux
     function calculerTotaux() {
         let totalHT = 0;
         let tauxTVA = parseFloat(document.getElementById('taux-tva').innerText) / 100;
@@ -223,10 +273,6 @@
     // Appeler la fonction de calcul des totaux au chargement de la page
     window.onload = function () {
         calculerTotaux();
-        const logoElement = document.getElementById('logo');
-    // Définir dynamiquement le chemin de l'image
-    logoElement.src = 'logo.png';
-    // Fonction pour calculer les totaux
     };
 
 
