@@ -86,39 +86,41 @@ async function genererFactureHTML(customer, datesInterventions, nombreInterventi
     //prestations
     const prestations = customer.prestations;
 
-
     const tbodyContent = prestations.map((prestation) => {
-        const interventionDates = prestation.interventions.map((intervention) => {
-            //console.log(intervention);
-
+        const interventionsToInvoiceArray = prestation.interventions.filter(objet => !objet.invoiced);
+        //console.log(interventionsToInvoiceArray);
+        const interventionDates = interventionsToInvoiceArray.map((intervention) => {
             const options = { year: 'numeric', month: 'numeric', day: 'numeric' }
             //console.log( intervention.date.toLocaleDateString('fr-FR', options));
             const formattedDates = intervention.date.toLocaleDateString('fr-FR', options);
-            return formattedDates;
+            let objInfos = {
+                dates: formattedDates,
+                coef: parseInt(intervention.qty_unit)
+            };
+            let interventionInfos = new Map(Object.entries(objInfos));
+            // console.log('infos of Map '+ interventionInfos.get('dates') + ' : ' + interventionInfos.get('coef'));
+            return interventionInfos;
+        })
+        let qtyArray = [];
+
+
+        let ul = interventionDates.map((i) => {
+            qtyArray.push(i.get('coef'));
+            console.log('qty array :' + qtyArray);
+            console.log('infos of Map ' + i.get('dates') + " : " + i.get('coef'));
+            return `<span>
+                     ${i.get('dates')} ${i.get('coef')} ${prestation.unit_type}${i.get('coef') > 1 ? 's' : ''}
+                 </span>`
         })
 
-        const coef = () => {
-            let coefficient = 1;
-            console.log(prestation.unit_type);
-            if (prestation.unit_type === "forfait") {
-                coefficient = 1;
-            } else {
-                prestation.interventions.map((intervention) => {
-                    coefficient = intervention.qty_unit;
-                })
-            }
-            return coefficient;
-        }
-
-        const qty = prestation.interventions.length * coef();
-        console.log('coeff ' + coef());
+        const qty = qtyArray.reduce((accumulator, n) => accumulator + n)
+        console.log('qty ' + qty);
+        console.log('ul ' + ul);
 
         return `
             <tr>
-                <td>${prestation.description} : </br> 
-                    <ul>
-                    ${interventionDates}
-                    </ul>
+                <td>${prestation.description}</br> 
+                    <ul>${ul}</ul>
                 </td>
                 <td class="qty">${qty}</td>
                 <td class="unit_price">${prestation.unit_price} €</td>
@@ -159,7 +161,7 @@ async function genererFactureHTML(customer, datesInterventions, nombreInterventi
         // Lire modèle de facture
         const modeleFacture = await fs.promises.readFile('./docs/modele-facture.html', 'utf-8');
 
-        console.log(imgData);
+        // console.log(imgData);
 
         const factureHTML = modeleFacture
             .replace(/{{imgData}}/g, imgData)
@@ -185,6 +187,7 @@ async function genererFactureHTML(customer, datesInterventions, nombreInterventi
             .replace(/{{tbodyContent}}/g, tbodyContent)
             .replace(/{{mention-tva}}/g, `${company.mentionTva}`)
             .replace(/{{taux-tva}}/g, `0`)
+            .replace(/{{tva}}/g, `0`)
             .replace(/{{bank-infos}}/g, bankInfos);
 
 
