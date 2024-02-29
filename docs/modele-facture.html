@@ -57,6 +57,11 @@
         .table th {
             background-color: #f2f2f2;
         }
+        .description{
+            max-width:250px;
+            color: red;
+            word-wrap: break-word;
+        }
 
         .mentions-legales {
             border-top: 1px solid #ccc;
@@ -172,7 +177,7 @@
                 <tr>
                     <th colspan="3">TVA (<span id="mention-tva">{{mention-tva}}</span> )<span id="taux-tva"
                             hidden>{{taux-tva}}</span></th>
-                    <td id="TVA">36,00 €</td>
+                    <td id="TVA">{{tva}}</td>
                 </tr>
                 <tr>
                     <th colspan="3" class="total">Total TTC</th>
@@ -222,7 +227,7 @@
 
     // Appeler la fonction de calcul des totaux au chargement de la page
     window.onload = function () {
-       // calculerTotaux();
+       calculerTotaux();
         const logoElement = document.getElementById('logo');
     // Définir dynamiquement le chemin de l'image
     logoElement.src = 'logo.png';

@@ -119,7 +119,7 @@ async function genererFactureHTML(customer, datesInterventions, nombreInterventi
 
         return `
             <tr>
-                <td>${prestation.description}</br> 
+                <td class="description">${prestation.description}</br> 
                     <ul>${ul}</ul>
                 </td>
                 <td class="qty">${qty}</td>
